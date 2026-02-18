@@ -442,7 +442,18 @@ void ChpLibGenerator::printChpBlock(Process *p, int where) {
   }
 #endif
   if (p->getlang()->getchp()) {
-    p->Print(chpFp);
+    // p->Print(chpFp);
+    const char *pname = p->getName();
+    bool wrap=false;
+    if (strncmp(pname, "ram_builtin", 11)==0) { wrap=true; }
+    if (wrap) {
+      fprintf(chpFp, "namespace syn {\n export namespace decomp {\n");
+    }
+    p->PrintHeader(chpFp, "defproc", true);
+    fprintf(chpFp, "{}\n");
+    if (wrap) {
+      fprintf(chpFp, "}\n}\n\n");
+    }
   }
   else {
     p->Print(chpFp);
